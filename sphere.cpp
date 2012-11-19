@@ -3,7 +3,6 @@
 #include <iostream>
 #include "light.h"
 #include <list>
-#include "awesome_inv_sqrt.h"
 
 
 

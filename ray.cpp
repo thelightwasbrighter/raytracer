@@ -1,7 +1,6 @@
 #include "ray.h"
 #include <math.h>
 #include <iostream>
-#include "awesome_inv_sqrt.h"
 
 Ray::Ray() {
     coord_t zero_coord;
