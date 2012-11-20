@@ -26,7 +26,6 @@ void Ray::setStartPoint(coord_t* coord) {
 
 void Ray::setDirection (coord_t* coord) {
     coord_t buffer = *coord;
-    //float betrag = awesome_inv_sqrt(buffer.x*buffer.x + buffer.y*buffer.y + buffer.z*buffer.z);
     float betrag = 1.0/sqrt(buffer.x*buffer.x + buffer.y*buffer.y + buffer.z*buffer.z);
     direction.x = buffer.x * betrag;
     direction.y = buffer.y * betrag;
@@ -64,8 +63,6 @@ bool Ray::getClosestSphere(std::list<Sphere*>* sphereList, Sphere** closestSpher
         (*closestSpherePoint).x = start_point.x + direction.x*t_min;
         (*closestSpherePoint).y = start_point.y + direction.y*t_min;
         (*closestSpherePoint).z = start_point.z + direction.z*t_min;
-        // std::cout << "pointer is null: " << (closestSphere!=NULL) <<std::endl;
-         //getchar();
         return true;
     }
     else {
