@@ -14,9 +14,10 @@ using namespace std;
 using namespace cv;
 
 
-#define MAX_REFLECTIONS 15
-#define WIDTH 1200
-#define HEIGHT 700
+#define MAX_REFLECTIONS 50
+#define WIDTH 1280
+#define HEIGHT 720
+#define PI 3.14159265359
 
 int main()
 {
@@ -24,103 +25,125 @@ int main()
     long seconds, useconds;
 
     list<Sphere*> sphereList;
-    float ref_fact = 0.13;
+    float ref_fact = 0.3;
+    float nonamb_fact = 0.95;
+    float sphere_radius = 100.0;
     rgb_value_t colour;
-    colour.r=0;
-    colour.g=0;
-    colour.b=255;
-    float sphere_radius = 50.0;
     coord_t sphere_center;
-    sphere_center.x = 0.0;
-    sphere_center.y = 0.0;
-    sphere_center.z = 0.0;
 
-    Sphere* mySphere0 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
     colour.r=0;
-    colour.g=255;
-    colour.b=0;
+    colour.g=0;
+    colour.b=255;
+    sphere_center.x = 800.0;
+    sphere_center.y = 150.0;
+    sphere_center.z = 0.0;
+    ref_fact = 0.2;
+    sphere_radius = 100;
+    Sphere* mySphere0 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+
+    colour.r=0;
+    colour.g=0;
+    colour.b=255;
+    sphere_center.x = 800.0;
+    sphere_center.y = -150.0;
+    sphere_center.z = 0.0;
+    ref_fact = 0.2;
+    sphere_radius = 100;
+    Sphere* mySphere1 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+
+    colour.r=0;
+    colour.g=0;
+    colour.b=255;
+    sphere_center.x = 800.0;
+    sphere_center.y = 0.0;
+    sphere_center.z = 150.0;
+    ref_fact = 0.2;
+    sphere_radius = 100;
+    Sphere* mySphere2 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+
+    colour.r=0;
+    colour.g=0;
+    colour.b=255;
+    sphere_center.x = 800.0;
+    sphere_center.y = 0.0;
+    sphere_center.z = -150.0;
+    ref_fact = 0.2;
+    sphere_radius = 100;
+    Sphere* mySphere3 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+
+    colour.r=255;
+    colour.g=155;
+    colour.b=255;
     sphere_center.x = 300.0;
-    sphere_center.y = 100.0;
+    sphere_center.y = 3500.0;
     sphere_center.z = 0.0;
+    ref_fact = 0.7;
+    sphere_radius = 3000;
+    Sphere* mySphere4 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
 
-    Sphere* mySphere1 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
-    colour.r=255;
-    colour.g=0;
-    colour.b=0;
-     sphere_center.x = 300.0;
-    sphere_center.y = -100.0;
-    sphere_center.z = 0.0;
-
-    Sphere* mySphere2 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
-    ref_fact = 0.4;
-    colour.r=255;
+    colour.r=0;
     colour.g=0;
     colour.b=255;
-    sphere_radius = 1500;
-    sphere_center.x = 1950.0;
-    sphere_center.y = -1250.0;
-    sphere_center.z = -200.0;
+    sphere_center.x = 800.0;
+    sphere_center.y = 150.0;
+    sphere_center.z = 0.0;
+    ref_fact = 0.5;
+    sphere_radius = 100;
+    Sphere* mySphere5 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
 
-    Sphere* mySphere3 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
-    ref_fact = 0.8;
-    colour.r=255;
-    colour.g=255;
-    colour.b=20;
-    sphere_radius = 7000;
-    sphere_center.x = 1950.0;
-    sphere_center.y = 7300.0;
-    sphere_center.z = 200.0;
-
-    Sphere* mySphere4 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
-    ref_fact = 0.1;
-    colour.r=255;
-    colour.g=255;
+    colour.r=0;
+    colour.g=0;
     colour.b=255;
-    sphere_radius = 100000.0;
-    sphere_center.x = 0.0;
-    sphere_center.y = 0.0;
-    sphere_center.z = 100400.0;
+    sphere_center.x = 800.0;
+    sphere_center.y = 150.0;
+    sphere_center.z = 0.0;
+    ref_fact = 0.5;
+    sphere_radius = 100;
+    Sphere* mySphere6 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
 
-    Sphere* mySphere5 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
-    sphere_radius = 100000.0;
-    sphere_center.x = 0.0;
-    sphere_center.y = 0.0;
-    sphere_center.z = 100400.0;
+    colour.r=0;
+    colour.g=0;
+    colour.b=255;
+    sphere_center.x = 800.0;
+    sphere_center.y = 150.0;
+    sphere_center.z = 0.0;
+    ref_fact = 0.5;
+    sphere_radius = 100;
+    Sphere* mySphere7 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
 
-    Sphere* mySphere6 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
-    sphere_center.x = 350.0;
-    sphere_center.y = -100.0;
-    sphere_center.z = 100.0;
+    colour.r=0;
+    colour.g=0;
+    colour.b=255;
+    sphere_center.x = 800.0;
+    sphere_center.y = 150.0;
+    sphere_center.z = 0.0;
+    ref_fact = 0.5;
+    sphere_radius = 100;
+    Sphere* mySphere8 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
 
-    Sphere* mySphere7 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
-    sphere_center.x = 350.0;
-    sphere_center.y = 100.0;
-    sphere_center.z = 100.0;
 
-    Sphere* mySphere8 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
+
+    sphereList.push_back(mySphere0);
+    sphereList.push_back(mySphere1);
+    sphereList.push_back(mySphere2);
+    sphereList.push_back(mySphere3);
+    sphereList.push_back(mySphere4);
+    //sphereList.push_back(mySphere5);
+    //sphereList.push_back(mySphere6);
+    //sphereList.push_back(mySphere7);
+    //sphereList.push_back(mySphere8);
 
 
     coord_t light_pos;
-    light_pos.x = -300.0;
-    light_pos.y = 300.0;
-    light_pos.z = 300.0;
+    light_pos.x = -500.0;
+    light_pos.y = 500.0;
+    light_pos.z = 200.0;
 
     Light* myLight = new Light(&light_pos, &(light_pos.x), &colour);
 
-    sphereList.push_back(mySphere0);
-    //sphereList.push_back(mySphere1);
-    //sphereList.push_back(mySphere2);
-    //sphereList.push_back(mySphere3);
-   // sphereList.push_back(mySphere4);
-    //sphereList.push_back(mySphere5);
-//    sphereList.push_back(mySphere6);
-//    sphereList.push_back(mySphere7);
-//    sphereList.push_back(mySphere8);
-
-    //rgb_value_t rgb_matrix[HEIGHT][WIDTH];
 
     coord_t cam_center;
-    cam_center.x = -25000.0;
+    cam_center.x = 0.0;
     cam_center.y = 0.0;
     cam_center.z = 0.0;
 
@@ -138,21 +161,35 @@ int main()
     myCam->setHeightPX(HEIGHT);
     myCam->setHeightPHY(HEIGHT);
     myCam->setWidthPHY(WIDTH);
-    myCam->setAngleOfViewDiagDeg(23.0);
+    myCam->setAngleOfViewDiagDeg(160.0);
     //myCam->makeSnapShot(&sphereList, myLight, MAX_REFLECTIONS, true);
 
 
 
     int n=0;
+    for (int i=0; i<130; i++) {
+
+        myCam->scaleFLength(1.01);
+        //myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
+        n++;
+    }
+
+    for (int i=0; i<100; i++) {
+
+        myCam->scaleFLength(0.98);
+        //myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
+        n++;
+    }
+
     for (int i=0; i<360; i++) {
 
-        cam_center.x =  -cos(3.14159265/180*i)*800.0;
-        cam_center.y = sin(3.14159265/180*i)*800.0;
-        cam_center.z = 0;
-        myCam->setOptCtr(cam_center);
-        myCam->setDir(subtract_coord_nopt(mySphere0->getCenter(), cam_center));
-        myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
-        n++;
+    cam_center.x = 800 - 800*cos(PI/180*i);
+    cam_center.y = 500*sin(PI/180*i);
+    cam_dir = subtract_coord_nopt(coord_t{800,0,0}, cam_center);
+    myCam->setDir(cam_dir);
+    myCam->setOptCtr(cam_center);
+    myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
+    n++;
     }
 
 /*

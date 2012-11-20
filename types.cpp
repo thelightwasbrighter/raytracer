@@ -1,5 +1,6 @@
 #include "types.h"
 #include <math.h>
+#include <iostream>
 
 coord_t add_coord(coord_t* a, coord_t* b) {
     coord_t ret_coord;
@@ -48,6 +49,10 @@ coord_t mult_vect(coord_t* mult_vect, float fact) {
 
 coord_t div_vect(coord_t* div_vect, float fact) {
     coord_t ret_vect;
+    if (fact==0.0) {
+        std::cout << "ERROR DIV BY ZERO" << std::endl;
+        while(1);
+    }
     ret_vect.x = (*div_vect).x/fact;
     ret_vect.y = (*div_vect).y/fact;
     ret_vect.z = (*div_vect).z/fact;
@@ -59,7 +64,11 @@ float vect_abs(coord_t* a) {
 }
 
 coord_t normalize_vect(coord_t* a) {
-    return div_vect(a, vect_abs(a));
+    if (((*a).x==0.0)&&((*a).y==0.0)&&((*a).z==0.0)) {
+        return *a;
+    } else {
+        return div_vect(a, vect_abs(a));
+    }
 
 }
 

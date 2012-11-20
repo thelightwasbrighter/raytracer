@@ -13,16 +13,18 @@ class Sphere
     coord_t center;
     float radius;
     float reflection_fact;
+    float non_ambient_fact;
     rgb_value_t colour;
     rgb_value_t shade_non_reflective(Ray* ray, Light* light, std::list<Sphere*>* sphereList, coord_t* point);
     rgb_value_t shade_reflective(Ray* ray, Light* light, std::list<Sphere*>* sphereList, coord_t* point, int ref_cnt);
 
   public:
-    Sphere(coord_t* center_coord, float* rad, float* ref_fact, rgb_value_t* col);
+    Sphere(coord_t* center_coord, float* rad, float* ref_fact, rgb_value_t* col, float* nonamb_fact);
     ~Sphere(){}
     void setCenter(coord_t* coord);
     void setRadius(float* rad);
     void setReflectionFactor(float* fact);
+    void setNonAmbientFactor(float* fact);
     void setColour(rgb_value_t* col);
     coord_t getCenter();
     float getRadius();
