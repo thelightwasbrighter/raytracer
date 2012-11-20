@@ -14,7 +14,9 @@ using namespace std;
 using namespace cv;
 
 
-#define MAX_REFLECTIONS 1
+#define MAX_REFLECTIONS 15
+#define WIDTH 1200
+#define HEIGHT 700
 
 int main()
 {
@@ -132,11 +134,22 @@ int main()
 
     myCam->setDir(cam_dir);
     myCam->setOptCtr(cam_center);
-    myCam->setFLength(500.0);
+    myCam->setWidthPX(WIDTH);
+    myCam->setHeightPX(HEIGHT);
+    myCam->setHeightPHY(HEIGHT);
+     myCam->setWidthPHY(WIDTH);
+    myCam->setAngleOfViewDiagDeg(30.0);
     //myCam->makeSnapShot(&sphereList, myLight, MAX_REFLECTIONS, true);
 
-    //CvSize size = cvSize(500,500);
+
+
     int n=0;
+    for (int i=1; i<180; i++) {
+        myCam->setAngleOfViewDiagDeg(i);
+        myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
+        n++;
+    }
+    /*
     for (float focal_iterator=0.1; focal_iterator<=1000000; focal_iterator*=1.1) {
        myCam->setFLength(focal_iterator);
         myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
@@ -154,7 +167,7 @@ int main()
         n++;
     }
 
-    /*
+
     float focal_iterator = 100000;
     for (int i=0; i<=23; i++) {
 
