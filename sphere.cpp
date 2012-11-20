@@ -4,8 +4,6 @@
 #include "light.h"
 #include <list>
 
-
-
 Sphere::Sphere(coord_t* center_coord, float* rad, float* ref_fact, rgb_value_t* col) {
     this->setCenter(center_coord);
     this->setRadius(rad);
@@ -138,9 +136,7 @@ rgb_value_t Sphere::shade_non_reflective(Ray* ray, Light* light, std::list<Spher
             }
         }
         delete lightRay;
-        //float norm_abs = awesome_inv_sqrt(norm_vect.x*norm_vect.x + norm_vect.y*norm_vect.y + norm_vect.z*norm_vect.z);
         float norm_abs = 1.0/sqrt(norm_vect.x*norm_vect.x + norm_vect.y*norm_vect.y + norm_vect.z*norm_vect.z);
-        //std::cout << norm_abs << std::endl;
 
         norm_vect.x *= norm_abs;
         norm_vect.y *= norm_abs;
@@ -193,12 +189,6 @@ rgb_value_t Sphere::shade_reflective(Ray* ray, Light* light, std::list<Sphere*>*
     reflect_dir.y = ray->getDirection().y - reflect_dir.y;
     reflect_dir.z = ray->getDirection().z - reflect_dir.z;
 
-//    norm_vect_abs = norm_vect.x*reflect_dir.x + norm_vect.y*reflect_dir.y + norm_vect.z*reflect_dir.z;
-//
-//    if (norm_vect_abs<0.0)
-//    std::cout << "ALARM!!!" << std::endl;
-
-
     if (ref_cnt > 0) {
         Ray* reflectedRay = new Ray(point, &reflect_dir);
         Sphere* pointer_dummy=this;
@@ -210,7 +200,6 @@ rgb_value_t Sphere::shade_reflective(Ray* ray, Light* light, std::list<Sphere*>*
     }
 
 }
-
 
 rgb_value_t Sphere::shade(Ray* ray, Light* light, std::list<Sphere*>* sphereList, coord_t* point, int ref_cnt){
     rgb_value_t non_reflective_fract;
