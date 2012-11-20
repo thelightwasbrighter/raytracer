@@ -135,10 +135,10 @@ int main()
     myCam->setDir(cam_dir);
     myCam->setOptCtr(cam_center);
     myCam->setFLength(500.0);
-    //myCam->makeSnapShot(&sphereList, myLight, MAX_REFLECTIONS, true);
+    myCam->makeSnapShot(&sphereList, myLight, MAX_REFLECTIONS, true);
 
     //CvSize size = cvSize(500,500);
-    int n=0;
+   /* int n=0;
     for (float focal_iterator=0.1; focal_iterator<=1000000; focal_iterator*=1.1) {
        myCam->setFLength(focal_iterator);
         myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
@@ -169,10 +169,7 @@ int main()
         myLight->setPosition(&light_pos);
         myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
         n++;
-    }
-
-
-
+    }*/
 
     return 0;
 }

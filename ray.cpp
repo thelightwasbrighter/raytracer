@@ -25,11 +25,7 @@ void Ray::setStartPoint(coord_t* coord) {
 }
 
 void Ray::setDirection (coord_t* coord) {
-    coord_t buffer = *coord;
-    float betrag = 1.0/sqrt(buffer.x*buffer.x + buffer.y*buffer.y + buffer.z*buffer.z);
-    direction.x = buffer.x * betrag;
-    direction.y = buffer.y * betrag;
-    direction.z = buffer.z * betrag;
+    direction = normalize_vect(coord);
 }
 
 coord_t Ray::getStartPoint() {
@@ -60,9 +56,7 @@ bool Ray::getClosestSphere(std::list<Sphere*>* sphereList, Sphere** closestSpher
 
     }
     if (hit_buffer==true) {
-        (*closestSpherePoint).x = start_point.x + direction.x*t_min;
-        (*closestSpherePoint).y = start_point.y + direction.y*t_min;
-        (*closestSpherePoint).z = start_point.z + direction.z*t_min;
+        *closestSpherePoint = point_on_straight(&start_point, &direction, t_min);
         return true;
     }
     else {

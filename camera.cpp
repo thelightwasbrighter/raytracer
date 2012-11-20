@@ -29,11 +29,7 @@ Camera::Camera() {
 
 
 void Camera::setDir(coord_t dir) {
-    //float betrag = awesome_inv_sqrt(buffer.x*buffer.x + buffer.y*buffer.y + buffer.z*buffer.z);
-    float betrag = sqrt(dir.x*dir.x + dir.y*dir.y + dir.z*dir.z);
-    direction.x = dir.x / betrag;
-    direction.y = dir.y / betrag;
-    direction.z = dir.z / betrag;
+    direction = normalize_vect(&dir);
 }
 
 void Camera::setFLength(float num) {
@@ -46,9 +42,8 @@ void Camera::setOptCtr(coord_t coord) {
 void Camera::makeSnapShot(std::list<Sphere*>* sphereList, Light* light, int ref_max, bool show) {
 
     coord_t ray_start, ray_start_temp, ray_dir, focal_point;
-    focal_point.x = optical_center.x - focal_length*direction.x;
-    focal_point.y = optical_center.y - focal_length*direction.y;
-    focal_point.z = optical_center.z - focal_length*direction.z;
+
+    focal_point = point_on_straight(&optical_center, &direction, -focal_length);
 
     rgb_value_t pixel_temp;
 
@@ -72,13 +67,9 @@ void Camera::makeSnapShot(std::list<Sphere*>* sphereList, Light* light, int ref_
             ray_start.y = ray_start_temp.x*direction.y + ray_start_temp.y*direction.x;
             ray_start.z = ray_start_temp.z;
             //translation to optical center
-            ray_start.x += optical_center.x;
-            ray_start.y += optical_center.y;
-            ray_start.z += optical_center.z;
+            ray_start = add_coord(&ray_start, &optical_center);
 
-            ray_dir.x = ray_start.x - focal_point.x;
-            ray_dir.y = ray_start.y - focal_point.y;
-            ray_dir.z = ray_start.z - focal_point.z;
+            ray_dir = subtract_coord(&ray_start, &focal_point);
 
             privateRay.setStartPoint(&ray_start);
             privateRay.setDirection(&ray_dir);

@@ -44,17 +44,14 @@ float Sphere::getReflectionFactor(){
 
 bool Sphere::intersectsWithRay(Ray* ray, float* t) {
     coord_t l_vect;
-    l_vect.x = this->getCenter().x - ray->getStartPoint().x;
-    l_vect.y = this->getCenter().y - ray->getStartPoint().y;
-    l_vect.z = this->getCenter().z - ray->getStartPoint().z;
 
-    float s = ray->getDirection().x * l_vect.x;
-    s += ray->getDirection().y * l_vect.y;
-    s += ray->getDirection().z * l_vect.z;
+    l_vect = subtract_coord_nopt(this->getCenter(), ray->getStartPoint());
+
+    float s = scalar_mult_vect_nopt(ray->getDirection(), l_vect);
 
     float s_square = s*s;
     float r_square = this->getRadius()*this->getRadius();
-    float l_square = l_vect.x*l_vect.x + l_vect.y*l_vect.y + l_vect.z*l_vect.z;
+    float l_square = scalar_mult_vect_nopt(l_vect, l_vect);
 
     if ((s<0.0)&&(l_square>r_square)) return false;
 
@@ -86,17 +83,13 @@ rgb_value_t Sphere::shade_non_reflective(Ray* ray, Light* light, std::list<Spher
     coord_t dist_light_vect;
     float dist_light_abs;
 
-    dist_ray_vect.x = this->getCenter().x - ray->getStartPoint().x;
-    dist_ray_vect.y = this->getCenter().y - ray->getStartPoint().y;
-    dist_ray_vect.z = this->getCenter().z - ray->getStartPoint().z;
+    dist_ray_vect = subtract_coord_nopt(this->getCenter(), ray->getStartPoint());
 
-    dist_ray_abs = sqrt(dist_ray_vect.x*dist_ray_vect.x + dist_ray_vect.y*dist_ray_vect.y + dist_ray_vect.z*dist_ray_vect.z);
+    dist_ray_abs = vect_abs(&dist_ray_vect);
 
-    dist_light_vect.x = this->getCenter().x - light->getPosition().x;
-    dist_light_vect.y = this->getCenter().y - light->getPosition().y;
-    dist_light_vect.z = this->getCenter().z - light->getPosition().z;
+    dist_light_vect = subtract_coord_nopt(this->getCenter(), light->getPosition());
 
-    dist_light_abs = sqrt(dist_light_vect.x*dist_light_vect.x + dist_light_vect.y*dist_light_vect.y + dist_light_vect.z*dist_light_vect.z);
+    dist_light_abs = vect_abs(&dist_light_vect);
 
     bool light_inside = (dist_light_abs<=this->getRadius()) ? true : false;
     bool ray_inside = (dist_ray_abs<=this->getRadius()) ? true : false;
@@ -105,18 +98,15 @@ rgb_value_t Sphere::shade_non_reflective(Ray* ray, Light* light, std::list<Spher
 
     if (!light_inside) {
         coord_t norm_vect;
-        norm_vect.x = (*point).x - center.x;
-        norm_vect.y = (*point).y - center.y;
-        norm_vect.z = (*point).z - center.z;
+        norm_vect = subtract_coord(point, &center);
 
         coord_t light_point_vect;
-        light_point_vect.x = (*point).x - light->getPosition().x;
-        light_point_vect.y = (*point).y - light->getPosition().y;
-        light_point_vect.z = (*point).z - light->getPosition().z;
 
-        float light_point_abs = sqrt(light_point_vect.x*light_point_vect.x + light_point_vect.y*light_point_vect.y + light_point_vect.z*light_point_vect.z);
+        light_point_vect = subtract_coord_nopt(*point, light->getPosition());
 
-        float parallelism = norm_vect.x*light_point_vect.x + norm_vect.y*light_point_vect.y + norm_vect.z*light_point_vect.z;
+        float light_point_abs = vect_abs(&light_point_vect);
+
+        float parallelism = scalar_mult_vect(&norm_vect, &light_point_vect);
 
         if (parallelism>0.0) return darkness;
         coord_t light_pos = light->getPosition();
@@ -136,15 +126,10 @@ rgb_value_t Sphere::shade_non_reflective(Ray* ray, Light* light, std::list<Spher
             }
         }
         delete lightRay;
-        float norm_abs = 1.0/sqrt(norm_vect.x*norm_vect.x + norm_vect.y*norm_vect.y + norm_vect.z*norm_vect.z);
 
-        norm_vect.x *= norm_abs;
-        norm_vect.y *= norm_abs;
-        norm_vect.z *= norm_abs;
+        norm_vect = normalize_vect(&norm_vect);
 
-        light_point_vect.x /= -light_point_abs;
-        light_point_vect.y /= -light_point_abs;
-        light_point_vect.z /= -light_point_abs;
+        light_point_vect = div_vect(&light_point_vect, -light_point_abs);
 
         parallelism = norm_vect.x*light_point_vect.x + norm_vect.y*light_point_vect.y + norm_vect.z*light_point_vect.z;
 
@@ -168,26 +153,13 @@ rgb_value_t Sphere::shade_reflective(Ray* ray, Light* light, std::list<Sphere*>*
     darkness.b = 0;
 
     coord_t norm_vect;
-    norm_vect.x = (*point).x - center.x;
-    norm_vect.y = (*point).y - center.y;
-    norm_vect.z = (*point).z - center.z;
+    norm_vect = subtract_coord(point, &center);
+    norm_vect = normalize_vect(&norm_vect);
 
-    float norm_vect_abs = sqrt(norm_vect.x*norm_vect.x + norm_vect.y*norm_vect.y + norm_vect.z*norm_vect.z);
-
-    norm_vect.x /= norm_vect_abs;
-    norm_vect.y /= norm_vect_abs;
-    norm_vect.z /= norm_vect_abs;
-
-    float reflect_steffler = 2.0*(norm_vect.x*(ray->getDirection().x) + norm_vect.y*(ray->getDirection().y) + norm_vect.z*(ray->getDirection().z));
 
     coord_t reflect_dir;
-    reflect_dir.x = reflect_steffler * norm_vect.x;
-    reflect_dir.y = reflect_steffler * norm_vect.y;
-    reflect_dir.z = reflect_steffler * norm_vect.z;
+    reflect_dir = subtract_coord_nopt(ray->getDirection(), mult_vect(&norm_vect, 2.0*(scalar_mult_vect_nopt(norm_vect, ray->getDirection()))));
 
-    reflect_dir.x = ray->getDirection().x - reflect_dir.x;
-    reflect_dir.y = ray->getDirection().y - reflect_dir.y;
-    reflect_dir.z = ray->getDirection().z - reflect_dir.z;
 
     if (ref_cnt > 0) {
         Ray* reflectedRay = new Ray(point, &reflect_dir);
