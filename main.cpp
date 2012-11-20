@@ -29,11 +29,11 @@ int main()
     colour.r=0;
     colour.g=0;
     colour.b=255;
-    float sphere_radius = 80.0;
+    float sphere_radius = 50.0;
     coord_t sphere_center;
-    sphere_center.x = 300.0;
+    sphere_center.x = 0.0;
     sphere_center.y = 0.0;
-    sphere_center.z = 100.0;
+    sphere_center.z = 0.0;
 
     Sphere* mySphere0 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour);
     colour.r=0;
@@ -101,18 +101,18 @@ int main()
 
 
     coord_t light_pos;
-    light_pos.x = 100.0;
-    light_pos.y = 100.0;
-    light_pos.z = 100.0;
+    light_pos.x = -300.0;
+    light_pos.y = 300.0;
+    light_pos.z = 300.0;
 
     Light* myLight = new Light(&light_pos, &(light_pos.x), &colour);
 
     sphereList.push_back(mySphere0);
-    sphereList.push_back(mySphere1);
-    sphereList.push_back(mySphere2);
-    sphereList.push_back(mySphere3);
-    sphereList.push_back(mySphere4);
-    sphereList.push_back(mySphere5);
+    //sphereList.push_back(mySphere1);
+    //sphereList.push_back(mySphere2);
+    //sphereList.push_back(mySphere3);
+   // sphereList.push_back(mySphere4);
+    //sphereList.push_back(mySphere5);
 //    sphereList.push_back(mySphere6);
 //    sphereList.push_back(mySphere7);
 //    sphereList.push_back(mySphere8);
@@ -120,12 +120,12 @@ int main()
     //rgb_value_t rgb_matrix[HEIGHT][WIDTH];
 
     coord_t cam_center;
-    cam_center.x = 0.0;
+    cam_center.x = -25000.0;
     cam_center.y = 0.0;
     cam_center.z = 0.0;
 
     coord_t cam_dir;
-    cam_dir.x = 150.0;
+    cam_dir.x = 1.0;
     cam_dir.y = 0.0;
     cam_dir.z = 0.0;
 
@@ -137,19 +137,25 @@ int main()
     myCam->setWidthPX(WIDTH);
     myCam->setHeightPX(HEIGHT);
     myCam->setHeightPHY(HEIGHT);
-     myCam->setWidthPHY(WIDTH);
-    myCam->setAngleOfViewDiagDeg(30.0);
+    myCam->setWidthPHY(WIDTH);
+    myCam->setAngleOfViewDiagDeg(23.0);
     //myCam->makeSnapShot(&sphereList, myLight, MAX_REFLECTIONS, true);
 
 
 
     int n=0;
-    for (int i=1; i<180; i++) {
-        myCam->setAngleOfViewDiagDeg(i);
+    for (int i=0; i<360; i++) {
+
+        cam_center.x =  -cos(3.14159265/180*i)*800.0;
+        cam_center.y = sin(3.14159265/180*i)*800.0;
+        cam_center.z = 0;
+        myCam->setOptCtr(cam_center);
+        myCam->setDir(subtract_coord_nopt(mySphere0->getCenter(), cam_center));
         myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
         n++;
     }
-    /*
+
+/*
     for (float focal_iterator=0.1; focal_iterator<=1000000; focal_iterator*=1.1) {
        myCam->setFLength(focal_iterator);
         myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);

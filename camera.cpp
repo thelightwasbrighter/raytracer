@@ -89,7 +89,7 @@ void Camera::setAngleOfViewDiagDeg(float deg) {
 
 void Camera::makeSnapShot(std::list<Sphere*>* sphereList, Light* light, int ref_max, bool show) {
 
-    coord_t ray_dir_temp, ray_dir, focal_point;
+    coord_t ray_dir_temp, ray_dir, ray_dir_projection_help, focal_point;
 
     focal_point = point_on_straight(&optical_center, &direction, -focal_length);
 
@@ -99,7 +99,7 @@ void Camera::makeSnapShot(std::list<Sphere*>* sphereList, Light* light, int ref_
 
     Ray privateRay(&focal_point, &focal_point);
     omp_set_num_threads(2);
-    #pragma omp parallel for firstprivate(privateRay, ray_dir_temp, ray_dir, pixel_temp) schedule(static,1)
+    #pragma omp parallel for firstprivate(privateRay, ray_dir_temp, ray_dir, pixel_temp, ray_dir_projection_help) schedule(static,1)
     for (int i=0; i<sensor_height_px; i++) {
         for (int j=0; j<sensor_width_px; j++) {
             //initial Koordinatenursprung
@@ -107,15 +107,22 @@ void Camera::makeSnapShot(std::list<Sphere*>* sphereList, Light* light, int ref_
             ray_dir.z = i*px_height -sensor_height_physical/2;
             ray_dir.x = 0.0;
             //rotation um y achse
-            ray_dir_temp.x = ray_dir.z*direction.z + ray_dir.x*direction.x;
+            ray_dir_projection_help = direction;
+            ray_dir_projection_help.y= 0.0;
+            ray_dir_projection_help = normalize_vect(&ray_dir_projection_help);
+            if (ray_dir_projection_help.x < 0.0) ray_dir_projection_help.x=-ray_dir_projection_help.x;
+            ray_dir_temp.x = -ray_dir.z*ray_dir_projection_help.z;
             ray_dir_temp.y = ray_dir.y;
-            ray_dir_temp.z = ray_dir.z*direction.x - ray_dir.x*direction.z;
+            ray_dir_temp.z = ray_dir.z*ray_dir_projection_help.x;
             //rotation um z achse
-            ray_dir.x = ray_dir_temp.x*direction.x - ray_dir_temp.y*direction.y;
-            ray_dir.y = ray_dir_temp.x*direction.y + ray_dir_temp.y*direction.x;
+            ray_dir_projection_help = direction;
+            ray_dir_projection_help.z= 0.0;
+            ray_dir_projection_help = normalize_vect(&ray_dir_projection_help);
+            ray_dir.x = ray_dir_temp.x*ray_dir_projection_help.x - ray_dir_temp.y*ray_dir_projection_help.y;
+            ray_dir.y = ray_dir_temp.x*ray_dir_projection_help.y + ray_dir_temp.y*ray_dir_projection_help.x;
             ray_dir.z = ray_dir_temp.z;
+            //ray_dir = ray_dir_temp;
             //translation to optical center
-
 
             ray_dir = add_coord(&ray_dir, &optical_center);
 
@@ -129,6 +136,8 @@ void Camera::makeSnapShot(std::list<Sphere*>* sphereList, Light* light, int ref_
             image_matrix->at<Vec3b>(i,j)[2] = pixel_temp.r;
             image_matrix->at<Vec3b>(i,j)[1] = pixel_temp.g;
             image_matrix->at<Vec3b>(i,j)[0] = pixel_temp.b;
+
+
         }
     }
     if (show) {
