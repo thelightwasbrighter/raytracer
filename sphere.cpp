@@ -215,7 +215,7 @@ rgb_value_t Sphere::shade_reflective(Ray* ray, Light* light, std::list<Sphere*>*
 rgb_value_t Sphere::shade(Ray* ray, Light* light, std::list<Sphere*>* sphereList, coord_t* point, int ref_cnt){
     rgb_value_t non_reflective_fract;
     if (reflection_fact>0.0) {
-        non_reflective_fract = shade_non_reflective(ray, light, sphereList, point);
+        non_reflective_fract = this->shade_non_reflective(ray, light, sphereList, point);
         rgb_value_t reflective_fract = shade_reflective(ray, light, sphereList, point, ref_cnt);
         rgb_value_t ret_val;
         ret_val.r = reflection_fact*reflective_fract.r + (1.0-reflection_fact)*non_reflective_fract.r;
@@ -223,7 +223,7 @@ rgb_value_t Sphere::shade(Ray* ray, Light* light, std::list<Sphere*>* sphereList
         ret_val.b = reflection_fact*reflective_fract.b + (1.0-reflection_fact)*non_reflective_fract.b;
         return ret_val;
     } else {
-        return non_reflective_fract = shade_non_reflective(ray, light, sphereList, point);
+        return this->shade_non_reflective(ray, light, sphereList, point);
     }
 
 }
