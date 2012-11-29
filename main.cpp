@@ -25,31 +25,32 @@ int main()
     long seconds, useconds;
 
     list<Sphere*> sphereList;
-    float ref_fact = 0.3;
-    float nonamb_fact = 0.95;
+    float ref_fact = 0.0;
+    float nonamb_fact = 0.2;
     float sphere_radius = 100.0;
     rgb_value_t colour;
     coord_t sphere_center;
-
+    float brechzahl = 1.05;
     colour.r=0;
     colour.g=0;
     colour.b=255;
     sphere_center.x = 800.0;
     sphere_center.y = 150.0;
     sphere_center.z = 0.0;
-    ref_fact = 0.2;
+    //ref_fact = 0.3;
+    //nonamb_fact = 0.95;
     sphere_radius = 100;
-    Sphere* mySphere0 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
-
+    Sphere* mySphere0 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, true, &brechzahl);
+    nonamb_fact = 0.95;
     colour.r=0;
     colour.g=0;
     colour.b=255;
     sphere_center.x = 800.0;
     sphere_center.y = -150.0;
     sphere_center.z = 0.0;
-    ref_fact = 0.2;
+    ref_fact = 0.3;
     sphere_radius = 100;
-    Sphere* mySphere1 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+    Sphere* mySphere1 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
 
     colour.r=0;
     colour.g=0;
@@ -59,7 +60,7 @@ int main()
     sphere_center.z = 150.0;
     ref_fact = 0.2;
     sphere_radius = 100;
-    Sphere* mySphere2 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+    Sphere* mySphere2 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
 
     colour.r=0;
     colour.g=0;
@@ -69,7 +70,7 @@ int main()
     sphere_center.z = -150.0;
     ref_fact = 0.2;
     sphere_radius = 100;
-    Sphere* mySphere3 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+    Sphere* mySphere3 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
 
     colour.r=255;
     colour.g=155;
@@ -79,47 +80,57 @@ int main()
     sphere_center.z = 0.0;
     ref_fact = 0.7;
     sphere_radius = 3000;
-    Sphere* mySphere4 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+    Sphere* mySphere4 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
 
-    colour.r=0;
-    colour.g=0;
+    colour.r=255;
+    colour.g=255;
     colour.b=255;
-    sphere_center.x = 800.0;
-    sphere_center.y = 150.0;
-    sphere_center.z = 0.0;
-    ref_fact = 0.5;
-    sphere_radius = 100;
-    Sphere* mySphere5 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+    sphere_center.x = 900.0;
+    sphere_center.y = -1000.0;
+    sphere_center.z = 600.0;
+    ref_fact = 0.8;
+    sphere_radius = 200;
+    Sphere* mySphere5 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
 
-    colour.r=0;
-    colour.g=0;
-    colour.b=255;
-    sphere_center.x = 800.0;
-    sphere_center.y = 150.0;
-    sphere_center.z = 0.0;
-    ref_fact = 0.5;
-    sphere_radius = 100;
-    Sphere* mySphere6 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+    colour.r=255;
+    colour.g=255;
+    colour.b=2;
+    sphere_center.x = 600.0;
+    sphere_center.y = -700.0;
+    sphere_center.z = 150.0;
+    ref_fact = 0.7;
+    sphere_radius = 180;
+    Sphere* mySphere6 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
 
-    colour.r=0;
-    colour.g=0;
-    colour.b=255;
-    sphere_center.x = 800.0;
-    sphere_center.y = 150.0;
-    sphere_center.z = 0.0;
-    ref_fact = 0.5;
-    sphere_radius = 100;
-    Sphere* mySphere7 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+    colour.r=55;
+    colour.g=255;
+    colour.b=25;
+    sphere_center.x = 1000.0;
+    sphere_center.y = -800.0;
+    sphere_center.z = -550.0;
+    ref_fact = 0.3;
+    sphere_radius = 300;
+    Sphere* mySphere7 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
 
-    colour.r=0;
-    colour.g=0;
+    colour.r=55;
+    colour.g=100;
     colour.b=255;
-    sphere_center.x = 800.0;
-    sphere_center.y = 150.0;
-    sphere_center.z = 0.0;
-    ref_fact = 0.5;
-    sphere_radius = 100;
-    Sphere* mySphere8 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact);
+    sphere_center.x = 0.0;
+    sphere_center.y = 0.0;
+    sphere_center.z = 10000.0;
+    ref_fact = 0.7;
+    sphere_radius = 9600.0;;
+    Sphere* mySphere8 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
+
+    colour.r=255;
+    colour.g=0;
+    colour.b=0;
+    sphere_center.x = 12000.0;
+    sphere_center.y = -200.0;
+    sphere_center.z = -190.0;
+    ref_fact = 0.9;
+    sphere_radius = 9000.0;;
+    Sphere* mySphere9 = new Sphere(&sphere_center, &sphere_radius, &ref_fact, &colour, &nonamb_fact, false, &brechzahl);
 
 
 
@@ -128,10 +139,11 @@ int main()
     sphereList.push_back(mySphere2);
     sphereList.push_back(mySphere3);
     sphereList.push_back(mySphere4);
-    //sphereList.push_back(mySphere5);
-    //sphereList.push_back(mySphere6);
-    //sphereList.push_back(mySphere7);
-    //sphereList.push_back(mySphere8);
+    sphereList.push_back(mySphere5);
+    sphereList.push_back(mySphere6);
+    sphereList.push_back(mySphere7);
+    sphereList.push_back(mySphere8);
+    sphereList.push_back(mySphere9);
 
 
     coord_t light_pos;
@@ -169,15 +181,15 @@ int main()
     int n=0;
     for (int i=0; i<130; i++) {
 
-        myCam->scaleFLength(1.01);
-        //myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
+        myCam->scaleFLength(1.03);
+        myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
         n++;
     }
 
     for (int i=0; i<100; i++) {
 
         myCam->scaleFLength(0.98);
-        //myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
+        myCam->addFrameToVideo(&sphereList, myLight, MAX_REFLECTIONS, n);
         n++;
     }
 

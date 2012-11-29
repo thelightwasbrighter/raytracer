@@ -28,6 +28,8 @@ coord_t mult_vect(coord_t* mult_vect, float fact);
 
 coord_t div_vect(coord_t* div_vect, float fact);
 
+coord_t cross_prod(coord_t* op_1, coord_t op_2);
+
 float vect_abs(coord_t* a);
 
 coord_t normalize_vect(coord_t* a);

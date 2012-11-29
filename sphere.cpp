@@ -4,12 +4,14 @@
 #include "light.h"
 #include <list>
 
-Sphere::Sphere(coord_t* center_coord, float* rad, float* ref_fact, rgb_value_t* col, float* nonamb_fact) {
+Sphere::Sphere(coord_t* center_coord, float* rad, float* ref_fact, rgb_value_t* col, float* nonamb_fact, bool glass, float* bz) {
     this->setCenter(center_coord);
     this->setRadius(rad);
     this->setReflectionFactor(ref_fact);
     this->setColour(col);
     this->setNonAmbientFactor(nonamb_fact);
+    this->setGlass(glass);
+    this->setBrechzahl(bz);
 }
 
 void Sphere::setCenter(coord_t* coord) {
@@ -28,25 +30,42 @@ float Sphere::getRadius() {
 }
 
 void Sphere::setReflectionFactor(float* fact){
-    reflection_fact = *fact;
+  reflection_fact = *fact;
 }
 
 void Sphere::setNonAmbientFactor(float* fact) {
-    non_ambient_fact = *fact;
+  non_ambient_fact = *fact;
 }
 
 void Sphere::setColour(rgb_value_t* col){
-    colour = *col;
+  colour = *col;
 }
 
 rgb_value_t Sphere::getColour(){
-    return colour;
+  return colour;
 }
 
 float Sphere::getReflectionFactor(){
-    return reflection_fact;
+  return reflection_fact;
 }
 
+
+void Sphere::setGlass(bool glass) {
+  is_glass = glass;
+}
+
+bool Sphere::getGlass() {
+  return is_glass;
+}
+
+void Sphere::setBrechzahl(float* num) {
+  brechzahl = *num;
+}
+
+float Sphere::getBrechzahl() {
+  return brechzahl;
+}
+   
 
 bool Sphere::intersectsWithRay(Ray* ray, float* t) {
     coord_t l_vect;
@@ -77,6 +96,7 @@ bool Sphere::intersectsWithRay(Ray* ray, float* t) {
 
 
 }
+
 
 rgb_value_t Sphere::shade_non_reflective(Ray* ray, Light* light, std::list<Sphere*>* sphereList, coord_t* point){
     rgb_value_t darkness;
@@ -195,29 +215,74 @@ rgb_value_t Sphere::shade_non_reflective(Ray* ray, Light* light, std::list<Spher
 
 }
 
+rgb_value_t Sphere::shade_glass(Ray* ray, Light* light, std::list<Sphere*>* sphereList, coord_t* point, int ref_cnt){
+  rgb_value_t darkness, ret_val;
+  darkness.r = 0;
+  darkness.g = 0;
+  darkness.b = 0;
+  
+  if (ref_cnt == 0) return darkness;
+  
+  coord_t norm_ray_dir_vect = ray->getDirection();
+  norm_ray_dir_vect = normalize_vect(&norm_ray_dir_vect);
+  
+  coord_t norm_vect;
+  norm_vect = subtract_coord(point, &center);
+  norm_vect = normalize_vect(&norm_vect);
+  
+  bool ray_going_inside = (scalar_mult_vect(&norm_vect, &norm_ray_dir_vect)<=0.0) ? true : false;
+  
+  coord_t refract_dir;
+ 
+  float r, w, k;
+
+  if (ray_going_inside) {
+    r = 1/brechzahl;
+  } else {
+    r = brechzahl;
+  }
+  
+  w = -scalar_mult_vect(&norm_vect, &norm_ray_dir_vect)*r;
+  k = 1.0 + (w-r)*(w+r);
+  
+  if (k<0.0) {
+    return this->shade_reflective(ray, light, sphereList, point, ref_cnt-1);
+  }
+  norm_ray_dir_vect = mult_vect(&norm_ray_dir_vect, r);
+  norm_vect = mult_vect(&norm_vect, (w-sqrt(k)));
+
+  refract_dir = add_coord(&norm_ray_dir_vect, &norm_vect);
+  
+  Ray* refractedRay = new Ray(point, &refract_dir);
+  Sphere* pointer_dummy=this;
+  ret_val = refractedRay->raytrace(sphereList, light, &pointer_dummy, ref_cnt-1);
+  delete refractedRay;
+  return ret_val;
+}
+
 rgb_value_t Sphere::shade_reflective(Ray* ray, Light* light, std::list<Sphere*>* sphereList, coord_t* point, int ref_cnt){
-    rgb_value_t darkness, ret_val;
-    darkness.r = 0;
-    darkness.g = 0;
-    darkness.b = 0;
-
-    coord_t norm_vect;
-    norm_vect = subtract_coord(point, &center);
-    norm_vect = normalize_vect(&norm_vect);
-
-
-    coord_t reflect_dir;
-    reflect_dir = subtract_coord_nopt(ray->getDirection(), mult_vect(&norm_vect, 2.0*(scalar_mult_vect_nopt(norm_vect, ray->getDirection()))));
-    if (ref_cnt > 0) {
-        Ray* reflectedRay = new Ray(point, &reflect_dir);
-        Sphere* pointer_dummy=this;
-        ret_val = reflectedRay->raytrace(sphereList, light, &pointer_dummy, ref_cnt-1);
-        delete reflectedRay;
-        return ret_val;
-    } else {
-        return darkness;
-    }
-
+  rgb_value_t darkness, ret_val;
+  darkness.r = 0;
+  darkness.g = 0;
+  darkness.b = 0;
+  
+  coord_t norm_vect;
+  norm_vect = subtract_coord(point, &center);
+  norm_vect = normalize_vect(&norm_vect);
+  
+  
+  coord_t reflect_dir;
+  reflect_dir = subtract_coord_nopt(ray->getDirection(), mult_vect(&norm_vect, 2.0*(scalar_mult_vect_nopt(norm_vect, ray->getDirection()))));
+  if (ref_cnt > 0) {
+    Ray* reflectedRay = new Ray(point, &reflect_dir);
+    Sphere* pointer_dummy=this;
+    ret_val = reflectedRay->raytrace(sphereList, light, &pointer_dummy, ref_cnt-1);
+    delete reflectedRay;
+    return ret_val;
+  } else {
+    return darkness;
+  }
+  
 }
 
 rgb_value_t Sphere::shade(Ray* ray, Light* light, std::list<Sphere*>* sphereList, coord_t* point, int ref_cnt){
@@ -225,16 +290,24 @@ rgb_value_t Sphere::shade(Ray* ray, Light* light, std::list<Sphere*>* sphereList
     darkness.r = 0;
     darkness.g = 0;
     darkness.b = 0;
-
+    
     rgb_value_t ret_val;
-    rgb_value_t ambient_val = this->getColour();
-    rgb_value_t non_reflective_fract = this->shade_non_reflective(ray, light, sphereList, point);
-    rgb_value_t reflective_fract = (reflection_fact>0.0) ? this->shade_reflective(ray, light, sphereList, point, ref_cnt) : darkness;
-
-    ret_val.r = (1.0-non_ambient_fact)*ambient_val.r+non_ambient_fact*(reflection_fact*reflective_fract.r+(1.0-reflection_fact)*non_reflective_fract.r);
-    ret_val.g = (1.0-non_ambient_fact)*ambient_val.g+non_ambient_fact*(reflection_fact*reflective_fract.g+(1.0-reflection_fact)*non_reflective_fract.g);
-    ret_val.b = (1.0-non_ambient_fact)*ambient_val.b+non_ambient_fact*(reflection_fact*reflective_fract.b+(1.0-reflection_fact)*non_reflective_fract.b);
-
+    if (is_glass) {
+      rgb_value_t non_reflective_fract = this->shade_glass(ray, light, sphereList, point, ref_cnt);
+      rgb_value_t reflective_fract = (reflection_fact>0.0) ? this->shade_reflective(ray, light, sphereList, point, ref_cnt) : darkness;
+      ret_val.r = reflection_fact*reflective_fract.r+(1.0-reflection_fact)*non_reflective_fract.r;
+      ret_val.g = reflection_fact*reflective_fract.g+(1.0-reflection_fact)*non_reflective_fract.g;
+      ret_val.b = reflection_fact*reflective_fract.b+(1.0-reflection_fact)*non_reflective_fract.b;
+    } else {
+      rgb_value_t ambient_val = this->getColour();
+      rgb_value_t non_reflective_fract = this->shade_non_reflective(ray, light, sphereList, point);
+      rgb_value_t reflective_fract = (reflection_fact>0.0) ? this->shade_reflective(ray, light, sphereList, point, ref_cnt) : darkness;
+      ret_val.r = (1.0-non_ambient_fact)*ambient_val.r+non_ambient_fact*(reflection_fact*reflective_fract.r+(1.0-reflection_fact)*non_reflective_fract.r);
+      ret_val.g = (1.0-non_ambient_fact)*ambient_val.g+non_ambient_fact*(reflection_fact*reflective_fract.g+(1.0-reflection_fact)*non_reflective_fract.g);
+      ret_val.b = (1.0-non_ambient_fact)*ambient_val.b+non_ambient_fact*(reflection_fact*reflective_fract.b+(1.0-reflection_fact)*non_reflective_fract.b); 
+    }
+      
+    
     return ret_val;
 
 }

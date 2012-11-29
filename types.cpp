@@ -59,6 +59,15 @@ coord_t div_vect(coord_t* div_vect, float fact) {
     return ret_vect;
 }
 
+coord_t cross_prod(coord_t* op_1, coord_t* op_2) {
+  coord_t ret_vect;
+  ret_vect.x = (*op_1).y*(*op_2).z - (*op_1).z*(*op_2).y;
+  ret_vect.y = (*op_1).z*(*op_2).x - (*op_1).x*(*op_2).z;
+  ret_vect.z = (*op_1).x*(*op_2).y - (*op_1).y*(*op_2).x;
+
+  return ret_vect;
+}
+
 float vect_abs(coord_t* a) {
     return sqrt((*a).x*(*a).x + (*a).y*(*a).y + (*a).z*(*a).z);
 }
