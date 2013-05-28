@@ -41,7 +41,6 @@ void scaleSensorPHY(float num);
 void scaleFLength(float num);
 void scaleCam(float num);
 void setAngleOfViewDiagDeg(float deg);
-
 };
 
 #endif // CAMERA_H_INCLUDED

@@ -85,8 +85,3 @@ coord_t point_on_straight(coord_t* a, coord_t* b, float x) {
     coord_t offset=mult_vect(b,x);
     return add_coord(a, &offset);
 }
-
-
-
-
-

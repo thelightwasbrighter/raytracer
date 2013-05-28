@@ -1,3 +1,5 @@
+#!/bin/sh
+
 make -j2
 ./raytracer
 cd stills

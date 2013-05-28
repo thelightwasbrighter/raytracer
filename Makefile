@@ -1,10 +1,10 @@
 CC=g++
-CCFLAGS = -I /usr/local/include:/usr/local/include/opencv:/usr/local/include/opencv2 -fopenmp -O2 `pkg-config --cflags opencv`
+CCFLAGS = -I /usr/local/include -fopenmp -O2 `pkg-config --cflags opencv`
 
 all: raytracer
 
 raytracer: main.o light.o sphere.o ray.o camera.o types.o
-	$(CC) main.o light.o sphere.o ray.o camera.o types.o -o raytracer -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_contrib -fopenmp -L /usr/local/lib  
+	$(CC) main.o light.o sphere.o ray.o camera.o types.o -o raytracer  -L/usr/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_contrib -fopenmp
 
 main.o: main.cpp
 	$(CC) $(CCFLAGS) -c main.cpp
@@ -24,3 +24,5 @@ camera.o: camera.cpp camera.h
 types.o: types.cpp types.h
 	$(CC) $(CCFLAGS) -c types.cpp
 
+clean:
+	rm -rf *.o raytracer

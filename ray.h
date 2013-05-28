@@ -29,5 +29,4 @@ class Ray
 };
 
 
-
 #endif // RAY_INCLUDED

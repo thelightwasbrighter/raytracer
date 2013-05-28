@@ -20,15 +20,12 @@ Camera::Camera() {
     sensor_width_physical = 500.0;
     optical_center = zero_coord;
     focal_length = 100.0;
-
     zero_coord.x=1.0;
 
     this->setDir(zero_coord);
 
     image_matrix = new Mat(500, 500, CV_8UC3);
 }
-
-
 
 void Camera::setDir(coord_t dir) {
     direction = normalize_vect(&dir);
@@ -90,9 +87,9 @@ void Camera::setAngleOfViewDiagDeg(float deg) {
 void Camera::makeSnapShot(std::list<Sphere*>* sphereList, Light* light, int ref_max, bool show) {
 
     coord_t ray_dir_temp, ray_dir, ray_dir_projection_help, focal_point;
-
+    
     focal_point = point_on_straight(&optical_center, &direction, -focal_length);
-
+    
     rgb_value_t pixel_temp;
 
     Sphere* dummy_pointer = NULL;
@@ -143,7 +140,7 @@ void Camera::makeSnapShot(std::list<Sphere*>* sphereList, Light* light, int ref_
     if (show) {
         namedWindow( "Raytrace", CV_WINDOW_AUTOSIZE );
         imshow("Raytrace", *image_matrix);
-
+	std::cout << "BLA" << std::endl;
         cvWaitKey(0);
     } else {
         //imwrite("raytrace.jpg", image_matrix);
